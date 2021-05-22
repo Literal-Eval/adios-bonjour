@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Client.qml</file>
+        <file>Server.qml</file>
+        <file>FileViewClient.qml</file>
+        <file>AddressBar.qml</file>
+        <file>TitleBar.qml</file>
+        <file>TypeDenoter.qml</file>
+        <file>FileViewServer.qml</file>
+        <file>Footer.qml</file>
+    </qresource>
+</RCC>
