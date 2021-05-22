@@ -7,4 +7,7 @@ into user friendly GUI, and uses the data made available by the former two apps.
 
 # Building
 Compiled using Qt 5.12, it should work with latest versions too. Some deprecations may be there, but those can be easily sorted out.
-To compile, open myQtp in Qt Creator, change the paths for resources in the code (the res folder), and it should compile file.
+To compile, open myQtp in Qt Creator, change the paths for resources in the code (the res folder), and it should compile fine.
+
+# Binaries
+Check the release section.
