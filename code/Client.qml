@@ -7,7 +7,15 @@ import Qt.labs.qmlmodels 1.0
 Window {
     id: rootClient
 
-    property var colorDARK: Qt.rgba(0.157, 0.157, 0.157, 255)
+    property var colorBLACK: Qt.rgba(0, 0, 0, 1)
+    property var colorDARK: Qt.rgba(0.157, 0.157, 0.157, 1)
+    property var colorGRAY: Qt.rgba(0.843, 0.843, 0.843, 1)
+    property var colorLIGHT: Qt.rgba(1, 1, 1, 1)
+
+    property var backColor: colorDARK
+    property var backMode: "dark"
+    property var frontColor: (backMode === "light") ? "black": "white"
+
     flags: Qt.FramelessWindowHint | Qt.Window | Qt.WindowMinimizeButtonHint
 
     visible: true
@@ -16,15 +24,18 @@ Window {
 
     Rectangle {
         id: back
-
         anchors.fill: parent
-        color: colorDARK
+        color: backColor
     }
 
     TitleBar {
         id: titleBar
         titleText: "Client"
         targetWin: rootClient
+    }
+
+    DrawerClient {
+        id: drawer
     }
 
     AddressBar {
@@ -37,39 +48,75 @@ Window {
         id: typeDenoter
 
         anchors.top: addressBar.bottom
-        anchors.left: currentDir.left
+        anchors.left: dirView.left
     }
 
     FileViewClient {
-        id: currentDir
+        id: dirView
         anchors.top: typeDenoter.bottom
     }
 
     Footer {
         id: footer
-        anchors.top: currentDir.bottom
-        anchors.topMargin: 10
+        actionWindow: bClient
+        anchors.top: dirView.bottom
+        anchors.topMargin: 15
+    }
+
+    ProgressBar {
+        id: progress
+
+        from: 0; to: 100
+        height: 5; width: 200
+        value: 0
+        anchors.top: footer.top
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 450
+
+        visible: false
     }
 
     Component.onCompleted: {
         fillModel()
     }
 
+    Connections {
+        target: bServer
+
+        function onSetUploadProgress(percentage)
+        {
+            progress.value = percentage
+        }
+
+        function onUploadComplete()
+        {
+            progress.value = 0
+            progress.visible = false
+        }
+
+        function onShowProgress()
+        {
+            progress.visible = true
+        }
+    }
+
     function fillModel()
     {
-        currentDir.model.clear()
-        currentDir.contentY = 0
+        dirView.model.clear()
+        dirView.contentY = 0
         var count = bClient.getListDir();
         var fileInfo;
 
         for (var i = 0; i < count; i++)
         {
             fileInfo = bClient.getFileInfo();
-            currentDir.model.append({"name": fileInfo[0],
+            dirView.model.append({"name": fileInfo[0],
                                  "size": fileInfo[1],
                                  "lastModified": fileInfo[2],
                                  "type": fileInfo[3],
-                                 "sizeType": fileInfo[4]})
+                                 "sizeType": fileInfo[4],
+                                 "selected": false})
         }
 
         bClient.setCurFile(0)

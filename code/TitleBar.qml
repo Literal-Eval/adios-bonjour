@@ -10,13 +10,13 @@ Rectangle {
     property var targetWin;
 
     width: parent.width; height: 30
-    color: colorDARK
+    color: backColor
 
     Label {
         id: title
 
         text: titleText
-        color: 'white'
+        color: frontColor
         anchors.centerIn: parent
     }
 
@@ -27,7 +27,7 @@ Rectangle {
         anchors.right: iconClose.left
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/minus.ico"
+        source: "file:" + path + "/res/img/minus.ico"
 
         MouseArea {
             anchors.fill: parent
@@ -59,7 +59,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 20
         anchors.verticalCenter: parent.verticalCenter
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/close.ico"
+        source: "file:" + path + "/res/img/close.ico"
 
         MouseArea {
             anchors.fill: parent

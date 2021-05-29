@@ -9,5 +9,8 @@
         <file>TypeDenoter.qml</file>
         <file>FileViewServer.qml</file>
         <file>Footer.qml</file>
+        <file>GetIp.qml</file>
+        <file>DrawerClient.qml</file>
+        <file>DrawerServer.qml</file>
     </qresource>
 </RCC>

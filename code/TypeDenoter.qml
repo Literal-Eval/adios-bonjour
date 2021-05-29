@@ -5,15 +5,15 @@ import QtQuick.Controls.Material 2.12
 Rectangle {
     id: typeDenoter
 
-    width: currentDir.width - 35
-    color: colorDARK
+    width: dirView.width - 35
+    color: backColor
     height: 30
 
     anchors.topMargin: 10
 
     Label {
         text: "Name"
-        color: 'white'
+        color: frontColor
 
         anchors {
             left: parent.left
@@ -29,7 +29,7 @@ Rectangle {
 
     Label {
         text: "Last Modified"
-        color: 'white'
+        color: frontColor
         anchors.centerIn: parent
 
         font {
@@ -40,7 +40,7 @@ Rectangle {
 
     Label {
         text: "Size"
-        color: "white"
+        color: frontColor
 
         anchors {
             right: parent.right

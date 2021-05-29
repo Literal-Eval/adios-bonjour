@@ -3,9 +3,9 @@ import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 
 ListView {
-    id: currentDir
+    id: dirView
 
-    width: 380; height: 380
+    width: 380; height: 370
     contentHeight: idModel.count * 25 + 50
 
     clip: true
@@ -14,6 +14,9 @@ ListView {
     anchors.left: parent.left
 
     boundsMovement: Flickable.StopAtBounds
+    keyNavigationEnabled: true
+
+    property var selection: []
 
     model: ListModel {
         id: idModel
@@ -22,25 +25,73 @@ ListView {
     delegate: Rectangle {
 
         width: 350
-        color: colorDARK
+        color: backColor
         height: 25
 
         Rectangle {
+            id: selectedInfo
 
             width: parent.width + 4
             radius: 5
             x: parent.x
-            color: Qt.rgba(1, 1, 1, 0.1)
+            color: (backMode === "dark") ? Qt.rgba(1, 1, 1, 0.15): Qt.rgba(0, 0, 0, 0.15)
             height: 25
 
-            visible: parent.focus
+            visible: selected
+        }
+
+        Rectangle {
+            id: hoverInfo
+
+            width: parent.width + 4
+            radius: 5
+            x: parent.x
+            color: (backMode === "dark") ? Qt.rgba(1, 1, 1, 0.1): Qt.rgba(0, 0, 0, 0.1)
+            height: 25
+
+            visible: false
         }
 
         MouseArea {
             anchors.fill: parent
+            hoverEnabled: true
+
+            onHoveredChanged: {
+                if (containsMouse)
+                {
+                    hoverInfo.visible = true
+                }
+
+                else
+                {
+                    hoverInfo.visible = false
+                }
+            }
 
             onClicked: {
-                parent.focus = true
+                switch (mouse.modifiers)
+                {
+
+                case Qt.ControlModifier:
+                    selection[index] = !(selection[index])
+                    idModel.get(index)["selected"] = !(idModel.get(index)["selected"])
+                    break
+
+                case Qt.ShiftModifier:
+                    break
+
+                default:
+                    selection = []
+                    selection[index] = true
+
+                    for (var i = 0; i < idModel.count; i++)
+                    {
+                        idModel.get(i)["selected"] = false
+                    }
+
+                    idModel.get(index)["selected"] = true
+                    break
+                }
             }
 
             onDoubleClicked: {
@@ -50,6 +101,13 @@ ListView {
                     fillModel()
                     var cAddress = bServer.curDir()
                     addressBar.currentAddress = cAddress
+                }
+
+                else
+                {
+                    bServer.setClipDir()
+                    bServer.fillQueu([name], "open", "")
+                    progress.visible = true
                 }
             }
         }
@@ -61,7 +119,7 @@ ListView {
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/folder.ico"
+            source: "file:" + path + "/res/img/folder.ico"
 
             visible: (type === "folder")
         }
@@ -73,7 +131,7 @@ ListView {
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/file.ico"
+            source: "file:" + path + "/res/img/file.ico"
 
             visible: (type === "file")
         }
@@ -86,7 +144,7 @@ ListView {
             clip: true
             font.pointSize: 10
             font.family: 'Calibri'
-            color: 'white'
+            color: frontColor
 
             anchors.left: iconFileIndicator.right
             anchors.verticalCenter: parent.verticalCenter
@@ -99,7 +157,7 @@ ListView {
             text: (type == "file") ? (size + " " + sizeType): "NA"
             font.pointSize: 10
             font.family: "Calibri"
-            color: 'white'
+            color: frontColor
 
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter

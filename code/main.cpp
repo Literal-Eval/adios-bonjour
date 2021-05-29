@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("Backend", &backend);
     engine.rootContext()->setContextProperty("bClient", &client);
     engine.rootContext()->setContextProperty("bServer", &server);
+    engine.rootContext()->setContextProperty("path", QDir::currentPath());
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

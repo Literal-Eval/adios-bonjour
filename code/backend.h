@@ -17,9 +17,23 @@ public:
 
     explicit Backend(QObject *parent = nullptr);
 
+    QStringList clipboard;
+    QString fileType;
+    QString dislocationType;
+
 signals:
 
+    void clipboardChanged(QString mode);
+    void clipboardCleared();
+
 public slots:
+
+    void setClipboard(QStringList clipboard, QString type, QString dislocationType);
+    void clearClipboard();
+    int getCount();
+    QString getFileType();
+    QStringList getClipboard();
+    QString getDislocationType();
 
 };
 

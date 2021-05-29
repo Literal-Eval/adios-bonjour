@@ -10,13 +10,25 @@ Window {
     width: 400; height: 530
     title: "Phone"
 
+    property var colorBLACK: Qt.rgba(0, 0, 0, 1)
+    property var colorDARK: Qt.rgba(0.157, 0.157, 0.157, 1)
+    property var colorGRAY: Qt.rgba(0.843, 0.843, 0.843, 1)
+    property var colorLIGHT: Qt.rgba(1, 1, 1, 1)
+
+    property var backColor: colorDARK
+    property var backMode: "dark"
+    property var frontColor: (backMode === "light") ? "black": "white"
+
     flags: Qt.FramelessWindowHint | Qt.Window | Qt.WindowMinimizeButtonHint
 
     Rectangle {
         id: back
-
         anchors.fill: parent
-        color: Qt.rgba(0.157, 0.157, 0.157, 255)
+        color: backColor
+    }
+
+    GetIp {
+        id: dialogGetIp
     }
 
     TitleBar {
@@ -25,11 +37,14 @@ Window {
         targetWin: rootServer
     }
 
+    DrawerServer {
+        id: drawer
+    }
+
     TypeDenoter {
         id: typeDenoter
-
         anchors.top: addressBar.bottom
-        anchors.left: currentDir.left
+        anchors.left: dirView.left
     }
 
     AddressBar {
@@ -39,46 +54,78 @@ Window {
     }
 
     FileViewServer {
-        id: currentDir
+        id: dirView
         anchors.top: typeDenoter.bottom
     }
 
     Footer {
         id: footer
+        actionWindow: bServer
+        anchors.top: dirView.bottom
+        anchors.topMargin: 15
+    }
 
-        anchors.top: currentDir.bottom
-        anchors.topMargin: 10
+    ProgressBar {
+        id: progress
+
+        from: 0; to: 100
+        height: 5; width: 120
+        value: 0
+        anchors.top: footer.top
+        anchors.topMargin: 7
+        anchors.left: parent.left
+        anchors.leftMargin: 70
+
+        visible: false
     }
 
     Connections {
         target: bServer
 
-        function onFolderInfoReady()
+        function onLsDone()
         {
             var fileInfo;
-            var count = bServer.getCurDirTotal()
+            var count = bServer.countDir()
+            console.log(count)
 
             for (var i = 0; i < count - 1; i++)
             {
                 fileInfo = bServer.getFileInfo();
-                currentDir.model.append({"name": fileInfo[0],
+                if (fileInfo[0] === "") { break; }
+                dirView.model.append({"name": fileInfo[0],
                                      "size": fileInfo[1],
                                      "type": fileInfo[2],
-                                     "sizeType": fileInfo[3]})
+                                     "sizeType": fileInfo[3],
+                                     "selected": false})
             }
 
             bServer.setCurFile(0)
+        }
+
+        function onSetDownloadProgress(percentage)
+        {
+            progress.value = percentage
+        }
+
+        function onDownloadComplete()
+        {
+            progress.value = 0
+            progress.visible = false
+        }
+
+        function onShowProgress()
+        {
+            progress.visible = true
         }
     }
 
     function fillModel()
     {
-        currentDir.model.clear()
-        currentDir.contentY = 0
-        bServer.getListDir();
+        dirView.model.clear()
+        dirView.contentY = 0
+        bServer.ls();
     }
 }
-
 
 
 

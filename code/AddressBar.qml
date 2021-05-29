@@ -12,7 +12,27 @@ Rectangle {
     anchors.left: parent.left
     anchors.leftMargin: 10
     anchors.top: parent.top
-    color: colorDARK
+    color: backColor
+
+    Image {
+        id: buttDrawer
+
+        width: 16; height: 16
+        anchors {
+            left: parent.left
+            leftMargin: 5
+        }
+
+        source: "file:" + path + "/res/img/settings.ico"
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                drawer.open()
+            }
+        }
+    }
 
     Image {
         id: buttCdUp
@@ -23,7 +43,7 @@ Rectangle {
             leftMargin: 30
         }
 
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/arrowLeft.ico"
+        source: "file:" + path + "/res/img/arrowLeft.ico"
 
         MouseArea {
             anchors.fill: parent
@@ -33,6 +53,8 @@ Rectangle {
                 fillModel()
                 var cAddress = actionWindow.curDir()
                 currentAddress = cAddress
+
+                dirView.selection = []
             }
         }
     }
@@ -46,7 +68,7 @@ Rectangle {
             top: parent.top
         }
 
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/arrowRight.ico"
+        source: "file:" + path + "/res/img/arrowRight.ico"
 
         MouseArea {
             anchors.fill: parent
@@ -63,7 +85,7 @@ Rectangle {
         width: 16; height: 16
         anchors.left: buttCdDown.right
         anchors.leftMargin: 10
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/folderHead.ico"
+        source: "file:" + path + "/res/img/folderHead.ico"
     }
 
     Label {
@@ -72,21 +94,24 @@ Rectangle {
         text: currentAddress
         anchors.leftMargin: 20
         anchors.left: iconFolderAddressBar.right
-        color: 'white'
+        color: frontColor
         font.pixelSize: 12
     }
 
     Image {
         id: iconRefresh
 
+        width: 16; height: 16
         anchors.right: parent.right
         anchors.rightMargin: 20
-        source: "file:E:/Codes/MyCodes/CPP/QML/build-myQFtp-Desktop_Qt_5_15_2_MinGW_64_bit-Release/res/img/refresh.ico"
+        source: "file:" + path + "/res/img/refreshBlack.png"
 
         MouseArea {
             anchors.fill: parent
             onClicked: {
                 fillModel()
+                dirView.selection = []
+                footer.clipboard = []
             }
         }
     }

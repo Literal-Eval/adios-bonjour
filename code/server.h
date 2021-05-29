@@ -16,28 +16,55 @@ public:
 
     QThread curlThread;
     Curl curl;
-    QList <Files*> curFolderContents;
+
+    QList <Files> curFolderContents;
     QString currentDir;
-    int port;
+    QString currentDirClient;
+    QStringList clipFromDir;
+    QString tempFile;
+    QString dislocationMode;
     bool safing;
+
+    QList <QString> queu;
 
     Q_PROPERTY(int curFile READ curFile WRITE setCurFile)
     int curFile() const;
 
 signals:
 
-    void folderInfoReady();
+    void lsDone();
+    void downloadComplete();
+    void uploadComplete();
+    void setDownloadProgress(double percentage);
+    void setUploadProgress(double percentage);
+    void showProgress();
 
 public slots:
 
+    void setIp(QString ip);
+
     QString curDir();
-    void getListDir();
-    void cdUp();
-    void refreshDirContents();
-    void endCurl();
     void setCurFile(int curFile);
     void setCurDir(QString name);
-    int getCurDirTotal();
+    void ls();
+    void cdUp();
+    void refreshDirContents();
+    int countDir();
+
+    void endCurl();
+
+    void getFile(QString name);
+    void saveFile();
+    void updateQueu();
+    void fillQueu(QStringList fileNames, QString mode, QString dirClient);
+
+    void uploadFile(QString name);
+
+    void setClipDir();
+    void setClipDirClient(QStringList files);
+
+    void getDownloadProgress(double percentage);
+    void getUploadProgress(double percentage);
     QStringList getFileInfo();
 };
 

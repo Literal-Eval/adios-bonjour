@@ -20,7 +20,9 @@ public:
 
     explicit Client(QObject *parent = nullptr);
 
-    QList <Files*> curFolderContents;
+    QList <Files> curFolderContents;
+    QList <Files> clipFiles;
+    QDir clipFromDir;
     QDir currentDir;
 
     Q_PROPERTY(int curFile READ curFile WRITE setCurFile)
@@ -37,7 +39,8 @@ public slots:
     void openFile(QString name);
     QString curDir();
     QStringList getFileInfo();
-
+    void setClipDir();
+    void dislocate(QStringList files, QString mode);
 };
 
 #endif // CLIENT_H

@@ -3,7 +3,8 @@
 Client::Client(QObject *parent) : QObject(parent),
     m_curFile {0}, currentDir {QDir::currentPath()}
 {
-
+    QDir cur {QDir::currentPath()};
+    cur.mkdir("temp");
 }
 
 void Client::setCurDir(QString curDir)
@@ -42,7 +43,7 @@ int Client::getListDir()
 
     foreach (QFileInfo file, dirContents)
     {
-        Files* fileInput = new Files {this, &file};
+        Files fileInput {file};
         this->curFolderContents.append(fileInput);
         count++;
     }
@@ -51,7 +52,7 @@ int Client::getListDir()
 
     foreach (QFileInfo file, dirContents)
     {
-        Files* fileInput = new Files {this, &file};
+        Files fileInput {file};
         this->curFolderContents.append(fileInput);
         count++;
     }
@@ -70,14 +71,38 @@ void Client::openFile(QString name)
 QStringList Client::getFileInfo()
 {
     QStringList data;
-    Files* file {this->curFolderContents[this->m_curFile]};
-    data << file->name;
-    data << QString::number(file->shortSize, 'f', 2);
-    data << file->lastModified.toString("dd-mm-yyyy hh:mm AP");
-    data << file->fileType;
-    data << file->sizeType;
+    Files file {this->curFolderContents[this->m_curFile]};
+    data << file.name;
+    data << QString::number(file.shortSize, 'f', 2);
+    data << file.lastModified.toString("dd-MM-yyyy hh:mm AP");
+    data << file.fileType;
+    data << file.sizeType;
+    data << file.path;
 
     this->m_curFile++;
 
     return data;
+}
+
+void Client::setClipDir()
+{
+    this->clipFromDir = this->currentDir;
+    this->clipFiles = this->curFolderContents;
+}
+
+void Client::dislocate(QStringList files, QString mode)
+{
+    for (int index {0}; index < files.count(); index++)
+    {
+        if (files[index] != "true") { continue; }
+
+        QString fileName {this->clipFiles[index].name};
+        QFile file {this->clipFromDir.absolutePath() + "/" + fileName};
+        QFile newFile {this->currentDir.absolutePath() + "/" + fileName};
+
+        if (mode == "copy")
+            file.copy(newFile.fileName());
+        else
+            file.rename(newFile.fileName());
+    }
 }

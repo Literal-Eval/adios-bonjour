@@ -5,8 +5,24 @@ Server::Server(QObject *parent) : QObject(parent)
     this->curl.moveToThread(&this->curlThread);
     this->curlThread.start();
 
-    connect(&this->curl, SIGNAL(folderInfoAvailable()),
+    connect(&this->curl, SIGNAL(lsDone()),
             this, SLOT(refreshDirContents()),
+            Qt::QueuedConnection);
+
+    connect(&this->curl, SIGNAL(save()),
+            this, SLOT(saveFile()),
+            Qt::QueuedConnection);
+
+    connect(&this->curl, SIGNAL(setDownloadProgress(double)),
+            this, SLOT(getDownloadProgress(double)),
+            Qt::QueuedConnection);
+
+    connect(&this->curl, SIGNAL(setUploadProgress(double)),
+            this, SLOT(getUploadProgress(double)),
+            Qt::QueuedConnection);
+
+    connect(&this->curl, SIGNAL(fileFetched()),
+            this, SLOT(updateQueu()),
             Qt::QueuedConnection);
 
     this->currentDir = "";
@@ -18,10 +34,132 @@ int Server::curFile() const
     return m_curFile;
 }
 
-void Server::getListDir()
+void Server::setIp(QString ip)
+{
+    this->curl.setIp(ip);
+}
+
+void Server::getFile(QString name)
+{
+    this->tempFile = name.mid(name.lastIndexOf("/"));
+    this->curl.tempFileName = name.mid(name.lastIndexOf("/"));
+    qInfo() << "fetching: " << name;
+    this->curl.fetchFile(name);
+}
+
+void Server::uploadFile(QString name)
+{
+    this->curl.uploadFile(name, this->currentDir);
+}
+
+void Server::saveFile()
+{
+    qInfo() << "File fetched";
+
+    if (this->dislocationMode == "copy")
+    {
+        QFile file { QDir::currentPath() + "/temp/" + this->tempFile };
+        qInfo() << "File exists: " << file.exists();
+        qInfo() << file.copy(this->currentDirClient + "/" + this->tempFile);
+        qInfo() << "saving to " << this->currentDirClient;
+    }
+
+    else if (this->dislocationMode == "open")
+    {
+        QDesktopServices::openUrl(QUrl::fromUserInput(QDir::currentPath() + "/temp/" + this->tempFile));
+    }
+}
+
+void Server::updateQueu()
+{
+    if (this->dislocationMode != "upload")
+    {
+        if (this->queu.length() == 0) { emit downloadComplete(); return; }
+        else { this->getFile(this->queu.at(0)); }
+    }
+
+    else
+    {
+        if (this->queu.length() == 0) { emit uploadComplete(); return; }
+        else { this->uploadFile(this->queu.at(0)); }
+    }
+
+    this->queu.removeAt(0);
+}
+
+void Server::fillQueu(QStringList fileNames, QString mode, QString dirClient)
+{
+    if (mode == "open")
+    {
+        for (auto & file: fileNames)
+        {
+            this->queu.append(file);
+        }
+    }
+
+    else if (mode == "copy" or mode == "cut")
+    {
+        for (int index {0}; index < fileNames.count(); index++)
+        {
+            if (fileNames[index] == "true")
+            {
+                this->queu.append(this->clipFromDir[index]);
+            }
+        }
+
+        this->currentDirClient = dirClient;
+    }
+
+    else if (mode == "upload")
+    {
+        for (int index {0}; index < fileNames.count(); index++)
+        {
+            if (fileNames[index] == "true")
+            {
+                this->queu.append(this->clipFromDir[index]);
+            }
+        }
+
+        this->currentDirClient = dirClient;
+    }
+
+    this->dislocationMode = mode;
+    this->updateQueu();
+}
+
+void Server::setClipDir()
+{
+    this->clipFromDir.clear();
+    for (auto & file: this->curFolderContents)
+    {
+        this->clipFromDir << file.path;
+    }
+}
+
+void Server::setClipDirClient(QStringList files)
+{
+    this->clipFromDir.clear();
+    for (auto & file: files)
+    {
+        this->clipFromDir << file;
+    }
+}
+
+void Server::getDownloadProgress(double percentage)
+{
+    emit setDownloadProgress(percentage);
+}
+
+void Server::getUploadProgress(double percentage)
+{
+    emit setUploadProgress(percentage);
+}
+
+void Server::ls()
 {
     this->safing = true;
-    this->curl.getListDir(this->currentDir);
+    this->curl.setCurrentDir(this->currentDir);
+    this->curl.ls(this->currentDir);
 }
 
 void Server::cdUp()
@@ -38,11 +176,13 @@ QString Server::curDir()
 void Server::refreshDirContents()
 {
     this->curFolderContents = this->curl.curFolderContents;
-    emit folderInfoReady();
+    emit lsDone();
 }
 
 void Server::endCurl()
 {
+    QDir temp { QDir::currentPath() + "/" + "temp" };
+    temp.removeRecursively();
     this->curlThread.exit();
 }
 
@@ -56,24 +196,24 @@ void Server::setCurDir(QString name)
     this->currentDir += "/" + name;
 }
 
-int Server::getCurDirTotal()
+int Server::countDir()
 {
     return this->curFolderContents.length();
 }
 
 QStringList Server::getFileInfo()
 {
+    if (this->m_curFile >= this->curFolderContents.count()) { return QStringList() << ""; }
+
     QStringList data;
-    Files* file {this->curFolderContents[this->m_curFile]};
-    data << file->name;
-    data << QString::number(file->shortSize, 'f', 2);
+    Files file {this->curFolderContents[this->m_curFile]};
+    data << file.name;
+    data << QString::number(file.shortSize, 'f', 2);
 //    data << file->lastModified.toString("dd-mm-yyyy hh:mm AP");
-    data << file->fileType;
-    data << file->sizeType;
+    data << file.fileType;
+    data << file.sizeType;
 
     this->m_curFile++;
-
-//    qInfo() << data;
 
     return data;
 }
