@@ -28,7 +28,7 @@ Drawer {
             id: buttGetIp
             width: 48; height: 48
 
-            source: "file:" + path + "/res/img/refresh3.png"
+            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/refresh3.png"
 
             MouseArea {
                 anchors.fill: parent

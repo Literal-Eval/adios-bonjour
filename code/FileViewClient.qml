@@ -18,6 +18,7 @@ ListView {
     keyNavigationEnabled: true
 
     property variant selection: []
+    property var shortTypes: []
 
     model: ListModel {
         id: idModel
@@ -37,7 +38,6 @@ ListView {
             x: parent.x
             color: (backMode === "dark") ? Qt.rgba(1, 1, 1, 0.15): Qt.rgba(0, 0, 0, 0.15)
             height: 25
-
             visible: selected
         }
 
@@ -48,9 +48,7 @@ ListView {
             radius: 5
             x: parent.x
             color: (backMode === "dark") ? Qt.rgba(1, 1, 1, 0.1): Qt.rgba(0, 0, 0, 0.1)
-
             height: 25
-
             visible: false
         }
 
@@ -117,11 +115,11 @@ ListView {
         Image {
             id: iconFolderIndicator
 
-            width: 16; height: 16
+            width: 20; height: 20
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:" + path + "/res/img/folder.ico"
+            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light/folder.ico": "dark/folder.png") /*+ "/folder.ico"*/
 
             visible: (type === "folder")
         }
@@ -129,11 +127,12 @@ ListView {
         Image {
             id: iconFileIndicator
 
-            width: 16; height: 16
+//            sourceSize.height: 60; sourceSize.width: 60
+            width: 20; height: 20
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:" + path + "/res/img/file.ico"
+            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/" + ext + ".png"
 
             visible: (type === "file")
         }

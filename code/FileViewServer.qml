@@ -115,11 +115,11 @@ ListView {
         Image {
             id: iconFolderIndicator
 
-            width: 16; height: 16
+            width: 20; height: 20
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:" + path + "/res/img/folder.ico"
+            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/folder.png"
 
             visible: (type === "folder")
         }
@@ -127,11 +127,11 @@ ListView {
         Image {
             id: iconFileIndicator
 
-            width: 16; height: 16
+            width: 20; height: 20
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "file:" + path + "/res/img/file.ico"
+            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/" + ext + ".png"
 
             visible: (type === "file")
         }

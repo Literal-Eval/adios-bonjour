@@ -72,6 +72,14 @@ void Curl::uploadFile(QString path, QString curDir)
             Qt::QueuedConnection);
 }
 
+void Curl::deleteFile(QString path)
+{
+    QStringList args;
+
+    args << "-s" << "ftp://" + this->curIp << "-Q" << "DELE " + path;
+    this->curl.start("curl.exe", args);
+}
+
 void Curl::downloadProgress()
 {
     QString response;

@@ -8,11 +8,12 @@ Window {
     id: rootClient
 
     property var colorBLACK: Qt.rgba(0, 0, 0, 1)
+    property var colorOLIVE: Qt.rgba(0.333, 0.42, 0.184, 1)
     property var colorDARK: Qt.rgba(0.157, 0.157, 0.157, 1)
     property var colorGRAY: Qt.rgba(0.843, 0.843, 0.843, 1)
     property var colorLIGHT: Qt.rgba(1, 1, 1, 1)
 
-    property var backColor: colorDARK
+    property var backColor: colorBLACK
     property var backMode: "dark"
     property var frontColor: (backMode === "light") ? "black": "white"
 
@@ -28,6 +29,15 @@ Window {
         color: backColor
     }
 
+    QuickAccess {
+        id: quickAccess
+        anchors {
+            left: parent.left
+            leftMargin: 20
+            verticalCenter: parent.verticalCenter
+        }
+    }
+
     TitleBar {
         id: titleBar
         titleText: "Client"
@@ -36,6 +46,14 @@ Window {
 
     DrawerClient {
         id: drawer
+    }
+
+    SetTheme {
+        id: dialogSetTheme
+    }
+
+    About {
+        id: dialogAbout
     }
 
     AddressBar {
@@ -82,6 +100,15 @@ Window {
     }
 
     Connections {
+        target: bClient
+
+        function onFillModel()
+        {
+//            fillModel()
+        }
+    }
+
+    Connections {
         target: bServer
 
         function onSetUploadProgress(percentage)
@@ -93,11 +120,18 @@ Window {
         {
             progress.value = 0
             progress.visible = false
+            fillModel()
         }
 
         function onShowProgress()
         {
             progress.visible = true
+        }
+
+        function onDownloadComplete()
+        {
+            fillModel()
+            progress.visible = false
         }
     }
 
@@ -116,6 +150,7 @@ Window {
                                  "lastModified": fileInfo[2],
                                  "type": fileInfo[3],
                                  "sizeType": fileInfo[4],
+                                 "ext": fileInfo[6],
                                  "selected": false})
         }
 

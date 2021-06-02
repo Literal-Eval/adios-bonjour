@@ -12,5 +12,8 @@
         <file>GetIp.qml</file>
         <file>DrawerClient.qml</file>
         <file>DrawerServer.qml</file>
+        <file>QuickAccess.qml</file>
+        <file>SetTheme.qml</file>
+        <file>About.qml</file>
     </qresource>
 </RCC>

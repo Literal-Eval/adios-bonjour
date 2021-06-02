@@ -1,5 +1,7 @@
 #include "files.h"
 
+QHash <QString, QStringList> Files::metaData;
+
 Files::Files(QFileInfo file)
 {
     this->name = file.fileName();
@@ -50,3 +52,77 @@ void Files::shortenSize()
 
     this->sizeType = sizeTypeData[i];
 }
+
+QString Files::getExtension()
+{
+    QString final;
+    if (this->fileType == "folder") { return "folder"; }
+    if (this->name.length() > 6)
+    {
+        QString compCheck {this->name.mid(this->name.length() - 5)};
+        if (compCheck.mid(0, 3) == "tar") { final = "compressed"; return final; }
+    }
+
+    QString extension {this->name.mid(this->name.lastIndexOf('.') + 1)};
+    QStringList keys {metaData.keys()};
+
+    for (int i {0}; i < keys.length(); i++)
+    {
+        QString type {keys[i]};
+        for (int j {0}; j < metaData[type].length(); j++)
+        {
+            QString ex {metaData[type][j]};
+            if (ex == extension)
+            {
+                final = type;
+                return final;
+            }
+        }
+    }
+
+    if (final == "")
+    {
+        final = "misc";
+    }
+
+    return final;
+}
+
+void Files::readExtensions()
+{
+    QFile meta {"meta.dat"};
+    meta.open(QIODevice::ReadOnly);
+
+    while (!meta.atEnd())
+    {
+        QString line {meta.readLine()};
+        QStringList tempData {line.split(' ')};
+        QStringList data;
+        QString type {tempData[0]};
+
+        for (QString & option: tempData.mid(1))
+        {
+            data << option;
+        }
+
+        data.last() = data.last().mid(0, data.last().length() - 2);
+        metaData[type] = data;
+    }
+}
+
+QString Files::getExt()
+{
+    return this->ext;
+}
+
+
+
+
+
+
+
+
+
+
+
+

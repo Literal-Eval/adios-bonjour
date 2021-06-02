@@ -24,7 +24,7 @@ Rectangle {
             top: parent.top
         }
 
-        source: "file:///" + path + "/res/img/color.png"
+        source: "file:///" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/color.png"
 
         MouseArea {
             anchors.fill: parent
@@ -69,7 +69,7 @@ Rectangle {
             top: parent.top
         }
 
-        source: "file:///" + path + "/res/img/paste3.png"
+        source: "file:///" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/paste.png"
 
         MouseArea {
             anchors.fill: parent
@@ -92,7 +92,8 @@ Rectangle {
 
                 if (actionWindow === bClient && Backend.getFileType() === "client")
                 {
-                    bClient.dislocate(clipboard, dislocationMode)
+                    bClient.dislocate(Backend.getClipboard(),
+                                      Backend.getDislocationType())
                 }
 
                 else if (actionWindow === bClient && Backend.getFileType() === "server")
@@ -143,14 +144,15 @@ Rectangle {
     Image {
         id: buttCut
 
-        sourceSize.width: 24; sourceSize.height: 24
+//        sourceSize.width: 24; sourceSize.height: 24
+        width: 24; height: 24
         anchors {
             right: buttPaste.left
             rightMargin: 20
             top: parent.top
         }
 
-        source: "file:///" + path + "/res/img/cut3.png"
+        source: "file:///" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/cut.png"
 
         MouseArea {
             anchors.fill: parent
@@ -177,14 +179,15 @@ Rectangle {
     Image {
         id: buttCopy
 
-        sourceSize.width: 24; sourceSize.height: 24
+//        sourceSize.width: 24; sourceSize.height: 24
+        width: 24; height: 24
         anchors {
             right: buttCut.left
             rightMargin: 20
             top: parent.top
         }
 
-        source: "file:" + path + "/res/img/copy3.png"
+        source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/copy.png"
 
         MouseArea {
             anchors.fill: parent
@@ -212,14 +215,15 @@ Rectangle {
     Image {
         id: buttClearSelection
 
-        sourceSize.width: 24; sourceSize.height: 24
+//        sourceSize.width: 24; sourceSize.height: 24
+        width: 24; height: 24
         anchors {
             right: buttCopy.left
             rightMargin: 20
             top: parent.top
         }
 
-        source: "file:" + path + "/res/img/clear.png"
+        source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/clear.png"
 
         MouseArea {
             anchors.fill: parent
@@ -294,6 +298,7 @@ Rectangle {
 
             bServer.setClipDirClient(files)
             bClient.setCurFile(0)
+            bClient.setClipDir()
         }
 
         Backend.setClipboard(clipboard,

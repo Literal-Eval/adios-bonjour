@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QDateTime>
+#include <QHash>
 #include "files.h"
 
 class Backend : public QObject

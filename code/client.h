@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QStandardPaths>
 #include "files.h"
 
 class Client : public QObject
@@ -25,10 +26,14 @@ public:
     QDir clipFromDir;
     QDir currentDir;
 
+    QSysInfo sysInfo;
+
     Q_PROPERTY(int curFile READ curFile WRITE setCurFile)
     int curFile() const;
 
 signals:
+
+    void fillModel();
 
 public slots:
 
@@ -41,6 +46,10 @@ public slots:
     QStringList getFileInfo();
     void setClipDir();
     void dislocate(QStringList files, QString mode);
+    void dislocateFolder(QString from, QString to, QString mode);
+
+    QStringList getDrivesList();
+    QStringList getLibraryList();
 };
 
 #endif // CLIENT_H

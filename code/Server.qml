@@ -15,7 +15,7 @@ Window {
     property var colorGRAY: Qt.rgba(0.843, 0.843, 0.843, 1)
     property var colorLIGHT: Qt.rgba(1, 1, 1, 1)
 
-    property var backColor: colorDARK
+    property var backColor: colorBLACK
     property var backMode: "dark"
     property var frontColor: (backMode === "light") ? "black": "white"
 
@@ -86,9 +86,8 @@ Window {
         {
             var fileInfo;
             var count = bServer.countDir()
-            console.log(count)
 
-            for (var i = 0; i < count - 1; i++)
+            for (var i = 0; i < count; i++)
             {
                 fileInfo = bServer.getFileInfo();
                 if (fileInfo[0] === "") { break; }
@@ -96,6 +95,7 @@ Window {
                                      "size": fileInfo[1],
                                      "type": fileInfo[2],
                                      "sizeType": fileInfo[3],
+                                     "ext": fileInfo[4],
                                      "selected": false})
             }
 
@@ -111,11 +111,18 @@ Window {
         {
             progress.value = 0
             progress.visible = false
+            fillModel()
         }
 
         function onShowProgress()
         {
             progress.visible = true
+        }
+
+        function onUploadComplete()
+        {
+            fillModel()
+            progress.visible = false
         }
     }
 

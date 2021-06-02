@@ -29,13 +29,43 @@ Drawer {
             id: buttGetIp
             width: 48; height: 48
 
-            source: "file:" + path + "/res/img/refresh3.png"
+            source: "file:" + path + "/res/img/refresh.png"
 
             MouseArea {
                 anchors.fill: parent
 
                 onClicked: {
                     dialogGetIp.visible = true
+                }
+            }
+        }
+
+        Image {
+            id: buttSetTheme
+            width: 48; height: 48
+
+            source: "file:" + path + "/res/img/theme.png"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    dialogSetTheme.visible = true
+                }
+            }
+        }
+
+        Image {
+            id: buttAbout
+            width: 48; height: 48
+
+            source: "file:" + path + "/res/img/Accounts.ico"
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    dialogAbout.visible = true
                 }
             }
         }

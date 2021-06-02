@@ -6,6 +6,7 @@
 #include "backend.h"
 #include "client.h"
 #include "server.h"
+#include "files.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 
+    Files::readExtensions();
     Backend backend;
     Client client;
     Server server;

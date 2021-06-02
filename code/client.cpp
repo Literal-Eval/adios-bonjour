@@ -78,6 +78,7 @@ QStringList Client::getFileInfo()
     data << file.fileType;
     data << file.sizeType;
     data << file.path;
+    data << file.getExtension();
 
     this->m_curFile++;
 
@@ -96,13 +97,83 @@ void Client::dislocate(QStringList files, QString mode)
     {
         if (files[index] != "true") { continue; }
 
-        QString fileName {this->clipFiles[index].name};
-        QFile file {this->clipFromDir.absolutePath() + "/" + fileName};
-        QFile newFile {this->currentDir.absolutePath() + "/" + fileName};
+        if (this->clipFiles[index].fileType == "file")
+        {
+            QString fileName {this->clipFiles[index].name};
+            QFile file {this->clipFromDir.absolutePath() + "/" + fileName};
+            QFile newFile {this->currentDir.absolutePath() + "/" + fileName};
 
-        if (mode == "copy")
-            file.copy(newFile.fileName());
+            if (mode == "copy")
+                file.copy(newFile.fileName());
+            else
+                file.rename(newFile.fileName());
+        }
+
         else
-            file.rename(newFile.fileName());
+        {
+            this->dislocateFolder(this->clipFiles[index].path,
+                                  this->currentDir.absolutePath(), mode);
+        }
+
+        emit this->fillModel();
     }
 }
+
+void Client::dislocateFolder(QString from, QString to, QString mode)
+{
+    QDir dirFrom {from};
+    QDir dirTo {to};
+    QString fName {from.mid(from.lastIndexOf("/") + 1)};
+    dirTo.mkdir(fName);
+    dirTo.cd(fName);
+
+    for (QFileInfo & fileData: dirFrom.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot))
+    {
+        if (fileData.isFile())
+        {
+            QFile file {fileData.filePath()};
+            if (mode == "copy")
+            {
+               file.copy(dirTo.absolutePath() + "/" + fileData.fileName());
+            }
+
+            else
+            {
+                file.rename(dirTo.absolutePath() + "/" + fileData.fileName());
+            }
+        }
+
+        else
+        {
+            this->dislocateFolder(fileData.filePath(),
+                                  dirTo.path(), mode);
+        }
+    }
+}
+
+QStringList Client::getDrivesList()
+{
+    QStringList drives;
+
+    for (auto & drive: QDir::drives())
+    {
+        drives << drive.path();
+    }
+
+    return drives;
+}
+
+QStringList Client::getLibraryList()
+{
+    QStringList data;
+    data << QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    data << QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    data << QStandardPaths::standardLocations(QStandardPaths::MusicLocation);
+    data << QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
+    data << QStandardPaths::standardLocations(QStandardPaths::MoviesLocation);
+
+    return data;
+}
+
+
+

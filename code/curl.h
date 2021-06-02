@@ -33,6 +33,7 @@ public:
     void fetchFile(QString path);            /*download the specified file*/
 
     void uploadFile(QString path, QString curDir);
+    void deleteFile(QString path);
 
 signals:
 
@@ -67,9 +68,10 @@ public slots:
  * silent: -s, showing error -S
  * sending: -T filename remoteAddress
  * progress: -# to show only progress
- *
- *
- *
+ * deletion: -Q "DELE path"
+ * create dir: -Q "MKD path" --ftp-create-dirs
+ * remove dir: -Q "RMD path" --ftp-create-dirs
+ * rename : -Q "RNFR path" -Q "RNTO path" (in same dir)
  * */
 
 #endif // CURL_H

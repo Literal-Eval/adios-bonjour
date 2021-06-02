@@ -20,11 +20,18 @@ public:
     QDateTime dateCreated;
     QString fileType;
     QString sizeType;
+    QString ext {getExtension()};
+    int fucker {69};
     QString path;
     long double shortSize;
     long long int size;
 
+    static QHash <QString, QStringList> metaData;
+
     void shortenSize();
+    QString getExtension();
+    static void readExtensions();
+    QString getExt();
 
 signals:
 

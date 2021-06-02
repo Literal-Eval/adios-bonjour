@@ -2,22 +2,6 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 
-//    Keys {
-//        onRightPressed: {
-//            if (ipOne.focus) { ipTwo.focus = true }
-//            if (ipTwo.focus) { ipThree.focus = true }
-//            if (ipThree.focus) { ipFour.focus = true }
-//            if (ipFour.focus) { port.focus = true }
-//        }
-
-//        onLeftPressed: {
-//            if (port.focus) { ipFour.focus = true }
-//            if (ipFour.focus) { ipThree.focus = true }
-//            if (ipThree.focus) { ipTwo.focus = true }
-//            if (ipTwo.focus) { ipOne.focus = true }
-//        }
-//    }
-
 Dialog {
     id: dia
 

@@ -44,7 +44,10 @@ void Server::getFile(QString name)
     this->tempFile = name.mid(name.lastIndexOf("/"));
     this->curl.tempFileName = name.mid(name.lastIndexOf("/"));
     qInfo() << "fetching: " << name;
-    this->curl.fetchFile(name);
+    if (this->dislocationMode == "open")
+        this->curl.fetchFile(this->currentDir + "/" + name);
+    else
+        this->curl.fetchFile(name);
 }
 
 void Server::uploadFile(QString name)
@@ -56,7 +59,7 @@ void Server::saveFile()
 {
     qInfo() << "File fetched";
 
-    if (this->dislocationMode == "copy")
+    if (this->dislocationMode == "copy" || this->dislocationMode == "cut")
     {
         QFile file { QDir::currentPath() + "/temp/" + this->tempFile };
         qInfo() << "File exists: " << file.exists();
@@ -64,9 +67,15 @@ void Server::saveFile()
         qInfo() << "saving to " << this->currentDirClient;
     }
 
-    else if (this->dislocationMode == "open")
+    else
     {
         QDesktopServices::openUrl(QUrl::fromUserInput(QDir::currentPath() + "/temp/" + this->tempFile));
+    }
+
+    if (this->dislocationMode == "cut")
+    {
+
+        this->curl.deleteFile(this->currentDir + "/" + this->tempFile);
     }
 }
 
@@ -212,6 +221,7 @@ QStringList Server::getFileInfo()
 //    data << file->lastModified.toString("dd-mm-yyyy hh:mm AP");
     data << file.fileType;
     data << file.sizeType;
+    data << file.getExtension();
 
     this->m_curFile++;
 
