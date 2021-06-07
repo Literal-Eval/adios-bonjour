@@ -19,7 +19,7 @@ Rectangle {
             Image {
                 id: iconPC
                 width: 24; height: 24
-                source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/PC.ico"
+                source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/PC.png"
             }
 
             Label {
@@ -78,7 +78,7 @@ Rectangle {
                 Image {
                     id: icon
                     width: 16; height: 16
-                    source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/drive.ico"
+                    source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/drive.png"
                     anchors.left: parent.left
                     anchors.leftMargin: 10
                 }
@@ -117,7 +117,7 @@ Rectangle {
             Image {
                 id: iconLibrary
                 width: 24; height: 24
-                source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/libraries.ico"
+                source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/libraries.png"
             }
 
             Label {
@@ -173,7 +173,7 @@ Rectangle {
                 Image {
                     id: icons
                     width: 16; height: 16
-                    source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/" + name + ".ico"
+                    source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/" + name + ".png"
                     anchors.left: parent.left
                     anchors.leftMargin: 10
                 }
@@ -214,9 +214,9 @@ Rectangle {
         }
 
         var libraries = bClient.getLibraryList()
-        var shortNames = ["Desktop", "Documents", "Music", "Pictures", "Movies"]
+        var shortNames = ["Desktop", "Documents", "Downloads", "Music", "Pictures", "Movies"]
         libModel.clear()
-        for (i = 0; i < 5; i++)
+        for (i = 0; i < 6; i++)
         {
             libModel.append({"name": shortNames[i],
                             "libPath": libraries[i],

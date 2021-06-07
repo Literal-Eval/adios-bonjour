@@ -5,7 +5,7 @@ import QtQuick.Controls.Material 2.12
 ListView {
     id: currentDir
 
-    width: 700; height: 370
+    width: 700; height: parent.height - 160
     contentHeight: idModel.count * 25 + 50
 
     clip: true
@@ -19,6 +19,32 @@ ListView {
 
     property variant selection: []
     property var shortTypes: []
+    property var f
+    property var tempIndex
+
+    Keys.onPressed: {
+        if (event.modifiers === Qt.ControlModifier)
+        {
+            switch (event.key)
+            {
+            case Qt.Key_A:
+                selectAll()
+                break
+
+            case Qt.Key_C:
+                f.dislocate("copy")
+                break
+
+            case Qt.Key_X:
+                f.dislocate("cut")
+                break
+
+            case Qt.Key_V:
+                f.paste()
+                break
+            }
+        }
+    }
 
     model: ListModel {
         id: idModel
@@ -52,6 +78,22 @@ ListView {
             visible: false
         }
 
+        ToolTip {
+            id: tool
+
+            delay: 1000
+            contentItem: Text {
+                font.pointSize: 10
+                color: (backMode === "dark") ? "white": "black"
+                text: name + "\n" + lastModified + "\n" + size + " " + sizeType
+            }
+
+            background: Rectangle {
+                color: backColor
+                border.color: (backMode === "dark") ? "white": "black"
+            }
+        }
+
         MouseArea {
             id: mouse
             anchors.fill: parent
@@ -61,14 +103,13 @@ ListView {
                 if (containsMouse)
                 {
                     hoverInfo.visible = true
-                    ToolTip.delay = 1000
-                    ToolTip.show(name + "\n" + lastModified + "\n" + size + " " + sizeType, -1)                    
+                    tool.visible = true
                 }
 
                 else
                 {
                     hoverInfo.visible = false
-                    ToolTip.hide()
+                    tool.visible = false
                 }
             }
 
@@ -82,6 +123,17 @@ ListView {
                     selection[index] = idModel.get(index)["selected"]
                     break
 
+                case Qt.ShiftModifier:
+                    var lim = Math.abs((index - tempIndex))
+                    var sign = (index - tempIndex) / lim
+
+                    for (var sixnine = 0; sixnine <= lim; sixnine++)
+                    {
+                        selection[tempIndex + sixnine * sign] = true
+                        idModel.get(tempIndex + sixnine * sign)["selected"] = true
+                    }
+                    break
+
                 default:
                     selection = []
                     selection[index] = true
@@ -92,6 +144,7 @@ ListView {
                     }
 
                     idModel.get(index)["selected"] = true
+                    tempIndex = index
                     break
                 }
             }
@@ -127,7 +180,6 @@ ListView {
         Image {
             id: iconFileIndicator
 
-//            sourceSize.height: 60; sourceSize.width: 60
             width: 20; height: 20
             anchors.left: parent.left
             anchors.leftMargin: 10
@@ -179,5 +231,14 @@ ListView {
     }
 
     ScrollBar.vertical: ScrollBar { }
+
+    function selectAll()
+    {
+        for (var index = 0; index < idModel.count; index++)
+        {
+            idModel.get(index)["selected"] = true
+            selection[index] = true
+        }
+    }
 }
 

@@ -108,7 +108,7 @@ Rectangle {
         width: 16; height: 16
         anchors.right: parent.right
         anchors.rightMargin: 20
-        source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/refreshBlack.png"
+        source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/refresh.png"
 
         MouseArea {
             anchors.fill: parent

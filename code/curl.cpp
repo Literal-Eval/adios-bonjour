@@ -87,11 +87,13 @@ void Curl::downloadProgress()
     while (this->ongoingDownload)
     {
         response = this->curl.readLine();
-        if (response != "" && response[0] == "\r")
+        if (response != "" && response[0] == '\r')
         {
             QString percentage = response.mid(response.length() - 6, 5);
-            qInfo() << percentage;
-            emit setDownloadProgress(percentage.toDouble());
+            bool res;
+            double per = percentage.toDouble(&res);
+            qInfo() << percentage << " is " << ((res) ? "Okay": "Not Okay");
+            if (res) emit setDownloadProgress(per);
         }
     }
 
@@ -108,7 +110,7 @@ void Curl::uploadProgress()
     while (this->ongoingDownload)
     {
         response = this->curl.readLine();
-        if (response != "" && response[0] == "\r")
+        if (response != "" && response[0] == '\r')
         {
             QString percentage = response.mid(response.length() - 6, 5);
             qInfo() << percentage;
@@ -215,6 +217,30 @@ void Curl::lsStarted()
             SIGNAL(readyReadStandardOutput()),
             this,
             SLOT(lsStarted()));
+}
+
+void Curl::del(QStringList arg)
+{
+    QStringList args;
+
+    args << "-s" << "ftp://" + this->curIp;
+
+    for (QString & path: arg)
+    {
+        args << "-Q" << "DELE " + path;
+    }
+
+    this->curl.start("curl.exe", args);
+
+    connect(&this->curl, SIGNAL(finished),
+            this, SLOT(delDone));
+}
+
+void Curl::delDone()
+{
+    emit sigDelDone();
+    disconnect(&this->curl, SIGNAL(finished),
+            this, SLOT(delDone));
 }
 
 void Curl::ls(QString dir)

@@ -1,4 +1,9 @@
-QT += quick quickcontrols2
+QT += quick quickcontrols2 network
+
+LIBS += -LC:\Qt\5.15.2\mingw81_64\lib
+        -lQt5Ftp
+        -lQt5Network
+        -lQt5Gui
 
 CONFIG += c++11
 
@@ -10,6 +15,7 @@ SOURCES += \
         backend.cpp \
         client.cpp \
         curl.cpp \
+        data.cpp \
         files.cpp \
         main.cpp \
         server.cpp
@@ -31,6 +37,7 @@ HEADERS += \
     backend.h \
     client.h \
     curl.h \
+    data.h \
     files.h \
     server.h
 

@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QString>
 #include "files.h"
 
 class Curl : public QObject
@@ -43,6 +44,7 @@ signals:
     void setUploadProgress(double percentage);        /*updating the upload progress.*/
     void fileFetched();
     void fileUploaded();
+    void sigDelDone();
 
 public slots:
 
@@ -59,6 +61,9 @@ public slots:
 
     void ls(QString dir);                    /*list the directory*/
     void lsStarted();                        /*dir listing has been done.*/
+
+    void del(QStringList args);
+    void delDone();
 };
 
 /* Curl Commands*/

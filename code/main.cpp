@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QQuickWindow>
 #include <QThread>
 #include "backend.h"
 #include "client.h"
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url2(QStringLiteral("qrc:/main2.qml"));
 
     Files::readExtensions();
     Backend backend;
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
     engine.load(url);
+    engine.load(url2);
 
     return app.exec();
 }

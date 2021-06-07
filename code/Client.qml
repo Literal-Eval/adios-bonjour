@@ -8,16 +8,15 @@ Window {
     id: rootClient
 
     property var colorBLACK: Qt.rgba(0, 0, 0, 1)
-    property var colorOLIVE: Qt.rgba(0.333, 0.42, 0.184, 1)
     property var colorDARK: Qt.rgba(0.157, 0.157, 0.157, 1)
     property var colorGRAY: Qt.rgba(0.843, 0.843, 0.843, 1)
     property var colorLIGHT: Qt.rgba(1, 1, 1, 1)
 
-    property var backColor: colorBLACK
+    property var backColor: colorDARK
     property var backMode: "dark"
     property var frontColor: (backMode === "light") ? "black": "white"
 
-    flags: Qt.FramelessWindowHint | Qt.Window | Qt.WindowMinimizeButtonHint
+    flags: Qt.FramelessWindowHint | Qt.Window | Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint
 
     visible: true
     width: 870; height: 530
@@ -40,7 +39,7 @@ Window {
 
     TitleBar {
         id: titleBar
-        titleText: "Client"
+        titleText: "Windoge"
         targetWin: rootClient
     }
 
@@ -50,6 +49,11 @@ Window {
 
     SetTheme {
         id: dialogSetTheme
+        f: footer
+    }
+
+    ColorPicker {
+        id: diaColPick
     }
 
     About {
@@ -64,7 +68,6 @@ Window {
 
     TypeDenoter {
         id: typeDenoter
-
         anchors.top: addressBar.bottom
         anchors.left: dirView.left
     }
@@ -72,6 +75,7 @@ Window {
     FileViewClient {
         id: dirView
         anchors.top: typeDenoter.bottom
+        f: footer
     }
 
     Footer {
@@ -79,6 +83,11 @@ Window {
         actionWindow: bClient
         anchors.top: dirView.bottom
         anchors.topMargin: 15
+
+        Component.onCompleted: {
+            setColor()
+            rootClient.update()
+        }
     }
 
     ProgressBar {
@@ -87,10 +96,9 @@ Window {
         from: 0; to: 100
         height: 5; width: 200
         value: 0
-        anchors.top: footer.top
-        anchors.topMargin: 7
+        anchors.verticalCenter: titleBar.verticalCenter
         anchors.left: parent.left
-        anchors.leftMargin: 450
+        anchors.leftMargin: 20
 
         visible: false
     }
@@ -101,11 +109,6 @@ Window {
 
     Connections {
         target: bClient
-
-        function onFillModel()
-        {
-//            fillModel()
-        }
     }
 
     Connections {

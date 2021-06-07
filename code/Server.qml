@@ -33,12 +33,17 @@ Window {
 
     TitleBar {
         id: titleBar
-        titleText: "Server"
+        titleText: "Amdroid"
         targetWin: rootServer
     }
 
     DrawerServer {
         id: drawer
+    }
+
+    SetTheme {
+        id: dialogSetTheme
+        f: footer
     }
 
     TypeDenoter {
@@ -56,6 +61,7 @@ Window {
     FileViewServer {
         id: dirView
         anchors.top: typeDenoter.bottom
+        f: footer
     }
 
     Footer {
@@ -63,6 +69,10 @@ Window {
         actionWindow: bServer
         anchors.top: dirView.bottom
         anchors.topMargin: 15
+
+        Component.onCompleted: {
+            setColor()
+        }
     }
 
     ProgressBar {
@@ -71,10 +81,9 @@ Window {
         from: 0; to: 100
         height: 5; width: 120
         value: 0
-        anchors.top: footer.top
-        anchors.topMargin: 7
+        anchors.verticalCenter: titleBar.verticalCenter
         anchors.left: parent.left
-        anchors.leftMargin: 70
+        anchors.leftMargin: 20
 
         visible: false
     }

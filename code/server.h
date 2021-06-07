@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QThread>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
 #include "curl.h"
 
 class Server: public QObject
@@ -38,6 +42,7 @@ signals:
     void setDownloadProgress(double percentage);
     void setUploadProgress(double percentage);
     void showProgress();
+    void deleteFile();
 
 public slots:
 
@@ -56,7 +61,9 @@ public slots:
     void getFile(QString name);
     void saveFile();
     void updateQueu();
-    void fillQueu(QStringList fileNames, QString mode, QString dirClient);
+    void fillQueu(QStringList fileNames,
+                  QString mode,
+                  QString dirClient);
 
     void uploadFile(QString name);
 
@@ -66,6 +73,8 @@ public slots:
     void getDownloadProgress(double percentage);
     void getUploadProgress(double percentage);
     QStringList getFileInfo();
+
+    void del(QStringList clipboard);
 };
 
 #endif // SERVERHANDLER_H

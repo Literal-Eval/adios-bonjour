@@ -9,6 +9,10 @@ Server::Server(QObject *parent) : QObject(parent)
             this, SLOT(refreshDirContents()),
             Qt::QueuedConnection);
 
+    connect(&this->curl, SIGNAL(sigDelDone()),
+            this, SLOT(refreshDirContents()),
+            Qt::QueuedConnection);
+
     connect(&this->curl, SIGNAL(save()),
             this, SLOT(saveFile()),
             Qt::QueuedConnection);
@@ -67,7 +71,13 @@ void Server::saveFile()
         qInfo() << "saving to " << this->currentDirClient;
     }
 
-    else
+    else if (this->dislocationMode == "uploadCut")
+    {
+        QFile file {this->queu.at(0)};
+        file.remove();
+    }
+
+    else if (this->dislocationMode == "open")
     {
         QDesktopServices::openUrl(QUrl::fromUserInput(QDir::currentPath() + "/temp/" + this->tempFile));
     }
@@ -81,7 +91,7 @@ void Server::saveFile()
 
 void Server::updateQueu()
 {
-    if (this->dislocationMode != "upload")
+    if (this->dislocationMode.mid(0, 6) != "upload")
     {
         if (this->queu.length() == 0) { emit downloadComplete(); return; }
         else { this->getFile(this->queu.at(0)); }
@@ -91,6 +101,7 @@ void Server::updateQueu()
     {
         if (this->queu.length() == 0) { emit uploadComplete(); return; }
         else { this->uploadFile(this->queu.at(0)); }
+        qInfo() << "Upload";
     }
 
     this->queu.removeAt(0);
@@ -119,7 +130,7 @@ void Server::fillQueu(QStringList fileNames, QString mode, QString dirClient)
         this->currentDirClient = dirClient;
     }
 
-    else if (mode == "upload")
+    else if (mode.mid(0, 6) == "upload")
     {
         for (int index {0}; index < fileNames.count(); index++)
         {
@@ -227,3 +238,25 @@ QStringList Server::getFileInfo()
 
     return data;
 }
+
+void Server::del(QStringList clipboard)
+{
+    QStringList args;
+
+    for (int index {0}; index < clipboard.length(); index++)
+    {
+        if (clipboard[index] == "true")
+        {
+            args << this->curFolderContents[index].path;
+        }
+    }
+
+    this->curl.del(args);
+}
+
+
+
+
+
+
+

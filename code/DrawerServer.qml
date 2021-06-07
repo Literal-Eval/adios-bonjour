@@ -19,6 +19,22 @@ Drawer {
         }
     }
 
+    ToolTip {
+        id: tool
+
+        delay: 1000
+        contentItem: Text {
+            font.pointSize: 11
+            color: (backMode === "dark") ? "white": "black"
+            text: tool.text
+        }
+
+        background: Rectangle {
+            color: backColor
+            border.color: (backMode === "dark") ? "white": "black"
+        }
+    }
+
     Column {
         width: contentWidth; height: contentHeight
         spacing: 20
@@ -28,15 +44,46 @@ Drawer {
             id: buttGetIp
             width: 48; height: 48
 
-            source: "file:" + path + "/res/img/" + ((backMode === "light") ? "light": "dark") + "/refresh3.png"
+            source: "file:" + path + "/res/img/refresh.png"
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onHoveredChanged: {
+                    if (containsMouse)
+                    {
+                        tool.text = "Re Enter IP"
+                        tool.x = parent.x + 60
+                        tool.y = parent.y + 242
+                        tool.visible = true
+                    }
+
+                    else
+                    {
+                        tool.visible = false
+                    }
+                }
 
                 onClicked: {
                     dialogGetIp.visible = true
                 }
             }
         }
+
+//        Image {
+//            id: buttSetTheme
+//            width: 48; height: 48
+
+//            source: "file:" + path + "/res/img/theme.png"
+
+//            MouseArea {
+//                anchors.fill: parent
+
+//                onClicked: {
+//                    dialogSetTheme.visible = true
+//                }
+//            }
+//        }
     }
 }

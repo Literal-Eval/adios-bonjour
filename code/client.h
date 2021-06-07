@@ -50,6 +50,8 @@ public slots:
 
     QStringList getDrivesList();
     QStringList getLibraryList();
+
+    void del(QStringList clipboard);
 };
 
 #endif // CLIENT_H

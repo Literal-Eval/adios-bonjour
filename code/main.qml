@@ -5,10 +5,14 @@ import QtQuick.Controls.Material 2.12
 
 Client {
     id: rootClient
-
-    Server {
-        id: rootServer
-        x: rootClient.x + rootClient.width + 5
-        y: rootClient.y
-    }
+    objectName: "windoge"
 }
+
+//Server {
+//    id: rootServer
+//    objectName: "amdroid"
+//    x: rootClient.x + rootClient.width + 5
+//    y: rootClient.y
+//}
+
+

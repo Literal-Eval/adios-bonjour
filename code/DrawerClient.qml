@@ -8,6 +8,7 @@ Drawer {
     width: 60; height: parent.height
     background: Rectangle {
         anchors.fill: parent
+        opacity: 0.8
 
         gradient: Gradient {
             GradientStop { position: 0.0;
@@ -17,28 +18,28 @@ Drawer {
             GradientStop { position: 1.0;
                 color: (backMode === "light") ? Qt.rgba(1, 1, 1, 0.8): Qt.rgba(0.157, 0.157, 0.157, 0.8) }
         }
+    }
 
+    ToolTip {
+        id: tool
+
+        delay: 1000
+        contentItem: Text {
+            font.pointSize: 11
+            color: (backMode === "dark") ? "white": "black"
+            text: tool.text
+        }
+
+        background: Rectangle {
+            color: backColor
+            border.color: (backMode === "dark") ? "white": "black"
+        }
     }
 
     Column {
         width: contentWidth; height: contentHeight
         spacing: 20
         anchors.centerIn: parent
-
-        Image {
-            id: buttGetIp
-            width: 48; height: 48
-
-            source: "file:" + path + "/res/img/refresh.png"
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    dialogGetIp.visible = true
-                }
-            }
-        }
 
         Image {
             id: buttSetTheme
@@ -48,6 +49,22 @@ Drawer {
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onHoveredChanged: {
+                    if (containsMouse)
+                    {
+                        tool.text = "Set Default Themes"
+                        tool.x = parent.x + 60
+                        tool.y = parent.y + 212
+                        tool.visible = true
+                    }
+
+                    else
+                    {
+                        tool.visible = false
+                    }
+                }
 
                 onClicked: {
                     dialogSetTheme.visible = true
@@ -59,10 +76,26 @@ Drawer {
             id: buttAbout
             width: 48; height: 48
 
-            source: "file:" + path + "/res/img/Accounts.ico"
+            source: "file:" + path + "/res/img/about.png"
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+
+                onHoveredChanged: {
+                    if (containsMouse)
+                    {
+                        tool.text = "Credits"
+                        tool.x = parent.x + 60
+                        tool.y = parent.y + 212
+                        tool.visible = true
+                    }
+
+                    else
+                    {
+                        tool.visible = false
+                    }
+                }
 
                 onClicked: {
                     dialogAbout.visible = true

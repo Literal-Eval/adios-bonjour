@@ -5,6 +5,8 @@ Client::Client(QObject *parent) : QObject(parent),
 {
     QDir cur {QDir::currentPath()};
     cur.mkdir("temp");
+    cur.cd("temp");
+    cur.mkdir("attr");
 }
 
 void Client::setCurDir(QString curDir)
@@ -168,11 +170,33 @@ QStringList Client::getLibraryList()
     QStringList data;
     data << QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
     data << QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    data << QStandardPaths::standardLocations(QStandardPaths::DownloadLocation);
     data << QStandardPaths::standardLocations(QStandardPaths::MusicLocation);
     data << QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
     data << QStandardPaths::standardLocations(QStandardPaths::MoviesLocation);
 
     return data;
+}
+
+void Client::del(QStringList clipboard)
+{
+    for (int index {0}; index < clipboard.length(); index++)
+    {
+        if (clipboard[index] == "true")
+        {
+            if (this->clipFiles[index].fileType == "file")
+            {
+                QFile file {this->clipFiles[index].path};
+                file.remove();
+            }
+
+            else
+            {
+                QDir dir {this->clipFiles[index].path};
+                dir.removeRecursively();
+            }
+        }
+    }
 }
 
 

@@ -15,5 +15,7 @@
         <file>QuickAccess.qml</file>
         <file>SetTheme.qml</file>
         <file>About.qml</file>
+        <file>main2.qml</file>
+        <file>ColorPicker.qml</file>
     </qresource>
 </RCC>

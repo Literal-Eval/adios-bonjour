@@ -3,14 +3,17 @@ import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 
 Dialog {
-    id: dia
+    id: root
 
     title: "Pleamse feed me with IP address..."
     visible: true
     anchors.centerIn: parent
     modal: true
+    closePolicy: Popup.CloseOnEscape
 
     standardButtons: Dialog.Ok
+
+
 
     onAccepted: {
         var fullIp = ipOne.text + "."
@@ -46,6 +49,7 @@ Dialog {
             }
 
             KeyNavigation.right: ipTwo
+            Keys.onReturnPressed: root.accept()
 
             Component.onCompleted: {
                 inputMask: "999"
@@ -69,6 +73,7 @@ Dialog {
 
             KeyNavigation.right: ipThree
             KeyNavigation.left: ipOne
+            Keys.onReturnPressed: root.accept()
 
             Component.onCompleted: {
                 inputMask: "999"
@@ -89,6 +94,8 @@ Dialog {
             onTextChanged: {
                 if (text.length == 3) { ipFour.focus = true }
             }
+
+            Keys.onReturnPressed: root.accept()
 
             Component.onCompleted: {
                 inputMask: "999"
@@ -112,6 +119,7 @@ Dialog {
 
             KeyNavigation.right: port
             KeyNavigation.left: ipThree
+            Keys.onReturnPressed: root.accept()
 
             Component.onCompleted: {
                 inputMask: "999"
@@ -131,6 +139,7 @@ Dialog {
             maximumLength: 4
 
             KeyNavigation.left: ipFour
+            Keys.onReturnPressed: root.accept()
 
             Component.onCompleted: {
                 inputMask: "9999"

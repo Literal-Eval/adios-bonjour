@@ -5,7 +5,7 @@ import QtQuick.Controls.Material 2.12
 ListView {
     id: dirView
 
-    width: 380; height: 370
+    width: parent.width - 20; height: parent.height - 160
     contentHeight: idModel.count * 25 + 50
 
     clip: true
@@ -16,7 +16,34 @@ ListView {
     boundsMovement: Flickable.StopAtBounds
     keyNavigationEnabled: true
 
+    property var tempIndex
     property var selection: []
+    property var f
+
+    Keys.onPressed: {
+        if (event.modifiers === Qt.ControlModifier)
+        {
+            switch (event.key)
+            {
+            case Qt.Key_A:
+                selectAll()
+                break
+
+            case Qt.Key_C:
+                f.dislocate("copy")
+                break
+
+            case Qt.Key_X:
+                f.dislocate("cut")
+                break
+
+            case Qt.Key_V:
+                f.paste()
+                console.log("paste")
+                break
+            }
+        }
+    }
 
     model: ListModel {
         id: idModel
@@ -24,7 +51,7 @@ ListView {
 
     delegate: Rectangle {
 
-        width: 350
+        width: rootServer.width - 30
         color: backColor
         height: 25
 
@@ -52,6 +79,22 @@ ListView {
             visible: false
         }
 
+        ToolTip {
+            id: tool
+
+            delay: 1000
+            contentItem: Text {
+                font.pointSize: 10
+                color: (backMode === "dark") ? "white": "black"
+                text: name + /*"\n" + lastModified + */"\n" + size + " " + sizeType
+            }
+
+            background: Rectangle {
+                color: backColor
+                border.color: (backMode === "dark") ? "white": "black"
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
@@ -60,11 +103,13 @@ ListView {
                 if (containsMouse)
                 {
                     hoverInfo.visible = true
+                    tool.visible = true
                 }
 
                 else
                 {
                     hoverInfo.visible = false
+                    tool.visible = false
                 }
             }
 
@@ -78,6 +123,15 @@ ListView {
                     break
 
                 case Qt.ShiftModifier:
+                    var lim = Math.abs((index - tempIndex))
+                    var sign = (index - tempIndex) / lim
+
+                    for (var sixnine = 0; sixnine <= lim; sixnine++)
+                    {
+                        selection[tempIndex + sixnine * sign] = true
+                        idModel.get(tempIndex + sixnine * sign)["selected"] = true
+                    }
+
                     break
 
                 default:
@@ -90,8 +144,11 @@ ListView {
                     }
 
                     idModel.get(index)["selected"] = true
+                    tempIndex = index
                     break
                 }
+
+                dirView.focus = true
             }
 
             onDoubleClicked: {
@@ -166,6 +223,15 @@ ListView {
     }
 
     ScrollBar.vertical: ScrollBar { }
+
+    function selectAll()
+    {
+        for (var index = 0; index < idModel.count; index++)
+        {
+            idModel.get(index)["selected"] = true
+            selection[index] = true
+        }
+    }
 }
 
 
