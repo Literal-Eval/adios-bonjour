@@ -12,3 +12,7 @@ To compile, open the source projects respectively in Qt Creator, change the path
 
 # Binaries
 Check the release section.
+
+# Contributions
+- Goyir Koyu - Provided an extensive testing at each stage and also helped with the icons and UI.
+- Priyanshu Singh - Tested and give valuable advice in designing the UI and choosing colors.
