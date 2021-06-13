@@ -1,5 +1,5 @@
 # adios-bonjour
-A user friendly app to transfer files between Windows and Android, written in Qt C++, QML and JavaScript.
+A user friendly app to transfer files between PC and Android, written in Qt C++, QML and JavaScript.
 
 # Gen Info
 - Portage uses TCP to communicate between the devices.
