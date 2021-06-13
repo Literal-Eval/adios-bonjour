@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>PageHome.qml</file>
+        <file>PageAbout.qml</file>
+        <file>PageLogs.qml</file>
+        <file>PageChats.qml</file>
+    </qresource>
+</RCC>
