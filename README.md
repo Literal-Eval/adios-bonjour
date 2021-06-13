@@ -1,5 +1,5 @@
 # adios-bonjour
-A user friendly app to transfer files between Windows and Android, written in Qt C++ and QML, and uses cURL as backend.
+A user friendly app to transfer files between Windows and Android, written in Qt C++ and QML, and uses TCP for transers.
 
 # Gen Info
 cUrl is used as the socket client, and the FTP server app servers as server for android. The project just binds these two
