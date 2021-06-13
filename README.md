@@ -1,4 +1,4 @@
-# adios-bonjour
+# Portage
 A user friendly app to transfer files between PC and Android, written in Qt C++, QML and JavaScript.
 
 # Gen Info
